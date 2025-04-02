@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-// import { Card, CardContent } from "@/components/ui/card";
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
+import "./App.css";
 const Card = ({ children }) => <div className="border p-4 rounded-lg shadow">{children}</div>;
 const CardContent = ({ children }) => <div>{children}</div>;
 const Button = ({ children, onClick }) => (
@@ -18,7 +16,6 @@ const Input = ({ value, onChange, placeholder }) => (
     placeholder={placeholder}
   />
 );
-
 
 class HuffmanNode {
   constructor(char, freq) {
@@ -64,35 +61,69 @@ const generateHuffmanCodes = (node, prefix = "", codeMap = {}) => {
   return codeMap;
 };
 
+const quickSort = (arr) => {
+  if (arr.length <= 1) return arr;
+  const pivot = arr[arr.length - 1];
+  const left = arr.filter((el) => el < pivot);
+  const right = arr.filter((el) => el > pivot);
+  return [...quickSort(left), pivot, ...quickSort(right)];
+};
+
 const HuffmanCompression = () => {
   const [inputText, setInputText] = useState("");
   const [encodedText, setEncodedText] = useState("");
   const [huffmanCodes, setHuffmanCodes] = useState({});
-
-  const handleCompress = () => {
-    if (!inputText) return;
-    const root = buildHuffmanTree(inputText);
-    const codes = generateHuffmanCodes(root);
-    const encoded = inputText.split("").map((char) => codes[char]).join("");
-    setHuffmanCodes(codes);
-    setEncodedText(encoded);
-  };
+  const [quickSortInput, setQuickSortInput] = useState("");
+  const [sortedArray, setSortedArray] = useState([]);
 
   return (
     <div className="flex flex-col items-center gap-4 p-6">
-      <h1 className="text-xl font-bold">Huffman Compression Tool</h1>
-      <Card className="p-4 w-96">
-        <CardContent>
-          <Input
-            placeholder="Enter text to compress"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-          />
-          <Button className="mt-4 w-full" onClick={handleCompress}>
-            Compress
-          </Button>
-        </CardContent>
-      </Card>
+      <h1 className="text-xl font-bold">Algorithm Tool</h1>
+      
+      <div className="w-full max-w-md">
+        <Card>
+          <CardContent>
+            <h2 className="font-semibold">Huffman Compression</h2>
+            <Input placeholder="Enter text" value={inputText} onChange={(e) => setInputText(e.target.value)} />
+            <Button onClick={() => {
+              const root = buildHuffmanTree(inputText);
+              const codes = generateHuffmanCodes(root);
+              const encoded = inputText.split("").map((char) => codes[char]).join("");
+              setHuffmanCodes(codes);
+              setEncodedText(encoded);
+            }}>Compress</Button>
+          </CardContent>
+        </Card>
+      </div>
+      
+      <div className="w-full max-w-md">
+        <Card>
+          <CardContent>
+            <h2 className="font-semibold">Quick Sort</h2>
+            <Input placeholder="Enter numbers separated by spaces" value={quickSortInput} onChange={(e) => setQuickSortInput(e.target.value)} />
+            <Button onClick={() => setSortedArray(quickSort(quickSortInput.split(" ").map(Number)))}>Sort</Button>
+          </CardContent>
+        </Card>
+      </div>
+      
+      <div className="w-full max-w-md">
+        <Card>
+          <CardContent>
+            <h2 className="font-semibold">Single Source Shortest Path</h2>
+            <p>Implementation pending...</p>
+          </CardContent>
+        </Card>
+      </div>
+      
+      <div className="w-full max-w-md">
+        <Card>
+          <CardContent>
+            <h2 className="font-semibold">Minimum Spanning Tree</h2>
+            <p>Implementation pending...</p>
+          </CardContent>
+        </Card>
+      </div>
+
       {encodedText && (
         <Card className="p-4 w-96">
           <CardContent>
@@ -103,6 +134,13 @@ const HuffmanCompression = () => {
                 <li key={char}>{char}: {code}</li>
               ))}
             </ul>
+          </CardContent>
+        </Card>
+      )}
+      {sortedArray.length > 0 && (
+        <Card className="p-4 w-96">
+          <CardContent>
+            <p><strong>Sorted Array:</strong> {sortedArray.join(", ")}</p>
           </CardContent>
         </Card>
       )}
